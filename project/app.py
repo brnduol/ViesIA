@@ -1,6 +1,6 @@
 from flask import Flask, request
 import pandas as pd
-from functions.metrics import false_positive_rate
+from functions.metrics import false_positive_rate, disparate_impact
 
 app = Flask(__name__)
 
@@ -11,6 +11,9 @@ def upload_csv():
     df = pd.read_csv(uploaded_file.stream)
     # Tem que codificar as features (por exemplo masculino e feminino)
     x = false_positive_rate(df)
+    di = disparate_impact(df, 'atributo_sensivel', 'masculino')
+    print(f'O Disparate Impact (DI) é {di}')
+
     return f'O False Positive Rate (FPR) é {x}'
 
 
