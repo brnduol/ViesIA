@@ -3,6 +3,44 @@ from typing import Dict
 import pandas as pd
 
 
+def predictive_equality_fpr_diff(
+    df: pd.DataFrame,
+    y_true_col: str = "y_true",
+    y_pred_col: str = "y_pred",
+    sensitive_col: str = "atributo_sensivel",
+    unprivileged_value=None,
+    privileged_value=None
+) -> float:
+    '''
+    Calcula a métrica Predictive Equality (diferença na taxa de falsos positivos - FPR).
+    
+    Args:
+        df: DataFrame contendo os dados
+        y_true_col: nome da coluna com os rótulos verdadeiros
+        y_pred_col: nome da coluna com as previsões do modelo
+        sensitive_col: nome da coluna com o atributo sensível (ex: gênero)
+        unprivileged_value: valor do grupo desprivilegiado na coluna sensível
+        privileged_value: valor do grupo privilegiado na coluna sensível
+
+    Returns:
+        FPR_diff: diferença de FPR entre desprivilegiado e privilegiado
+    '''
+    
+
+    unpriv = df[(df[sensitive_col] == unprivileged_value) & (df[y_true_col] == 0)]
+    priv   = df[(df[sensitive_col] == privileged_value)   & (df[y_true_col] == 0)]
+    
+
+    fp_unpriv = (unpriv[y_pred_col] == 1).sum()
+    fp_priv   = (priv[y_pred_col] == 1).sum()
+    
+
+    fpr_unpriv = fp_unpriv / len(unpriv) if len(unpriv) > 0 else 0
+    fpr_priv   = fp_priv / len(priv) if len(priv) > 0 else 0
+
+    return fpr_unpriv - fpr_priv
+
+
 def false_positive_rate(df: pd.DataFrame) -> float:
     '''
     Computes the False Positive Rate in a pandas DataFrame.
