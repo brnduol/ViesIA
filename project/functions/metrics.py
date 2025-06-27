@@ -8,7 +8,7 @@ def false_positive_rate(df: pd.DataFrame) -> float:
     Computes the False Positive Rate in a pandas DataFrame.
 
     Args:
-        df: Pandas DataFrame
+        df (pd.DataFrame): Pandas DataFrame
 
     Returns:
         float: The false positive rate of the DataFrame
@@ -30,9 +30,9 @@ def statistical_parity_difference(
     The DataFrame must have columns ['y_true', 'y_pred', 'sensitive_attr'], with the 'sensitive_attr' columns needing to be encoded.
 
     Args:
-        df: Pandas DataFrame.
+        df (pd.Dataframe): Pandas DataFrame.
 
-        reference_group_idx: index of reference group.
+        reference_group_idx (int): index of reference group.
 
     Returns:
         dict: Dictionary with the SPD value for each of the groups. The group's SPD value is accessed with its encoded index as key.
@@ -52,19 +52,19 @@ def statistical_parity_difference(
 
 
 def disparate_impact(
-    df: pd.DataFrame, 
+    df: pd.DataFrame,
     sensitive_attr: str,
     privileged_value: str,
-    positive_label=1
+    positive_label: int = 1,
 ) -> float:
     '''
     Calculates Disparate Impact (DI) in a DataFrame.
 
     Parameters:
-        df: pandas DataFrame with columns ['y_pred', 'y_true', sensitive_attr]
-        sensitive_attr: str, name of the sensitive attribute column (e.g. 'race')
-        privileged_value: value in sensitive_attr considered as the privileged group
-        positive_label: the label considered as a "positive outcome" (default=1)
+        df(pd.DataFrame): pandas DataFrame with columns ['y_pred', 'y_true', sensitive_attr]
+        sensitive_attr (str): name of the sensitive attribute column (e.g. 'race')
+        privileged_value (str): value in sensitive_attr considered as the privileged group
+        positive_label (int): the label considered as a "positive outcome" (default=1)
 
     Returns:
         DI: float, the disparate impact value
@@ -78,5 +78,5 @@ def disparate_impact(
 
     if p_priv == 0:
         return float('inf') if p_unpriv > 0 else 1.0
-    
+
     return round(p_unpriv / p_priv, 3)
