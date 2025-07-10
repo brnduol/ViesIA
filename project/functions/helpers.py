@@ -1,13 +1,14 @@
 import os
 from flask import Flask
 from openai import OpenAI
+from markdown import markdown
+from dotenv import load_dotenv
 
+load_dotenv('project/.env')
 
 ALLOWED_EXTENSIONS = {'csv'}
 
-client: OpenAI = OpenAI(
-    api_key=os.getenv('OPEN_AI_KEY'), base_url='https://api.perplexity.ai'
-)
+client = OpenAI(api_key=os.getenv('OPEN_AI_KEY'), base_url='https://api.perplexity.ai')
 
 
 def allowed_file(filename):
@@ -28,9 +29,17 @@ def bot_prompt(prompt: str):
                 'role': 'system',
                 'content': '''
                             Você é um especialista em Análise de viés e Markdown.
-                            A partir de scores de Predictive Equality, Statistical Parity Difference, e Disparate Impact,
+                            
+                            A partir de scores de:
+                            
+                            - Predictive Equality;
+                            - Statistical Parity Difference;
+                            - e Disparate Impact;
+                            - False Positive Rate;
+                            
                             além de uma descrição do problema, descreva o que pode ser feito de modo a mitigar o viés do modelo.
-                            Não forneça exemplos de código, apenas utilize 
+                            
+                            Não forneça exemplos de código, apenas utilize noções teóricas.
                             ''',
             },
             {'role': 'user', 'content': prompt},
@@ -38,4 +47,4 @@ def bot_prompt(prompt: str):
     )
 
     # Returning response content
-    return response.choices[0].message.content
+    return markdown(response.choices[0].message.content)

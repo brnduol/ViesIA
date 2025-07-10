@@ -1,4 +1,4 @@
-y_pred,y_true,atributo_sensivel
+y_pred,y_true,sensitive_attr
 0,0,feminino
 1,1,masculino
 0,0,masculino
