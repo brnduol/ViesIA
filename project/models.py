@@ -1,5 +1,5 @@
 import pandas as pd
-
+from markdown import markdown
 from functions.helpers import bot_prompt
 
 
@@ -13,15 +13,14 @@ class BiasAnalysis:
 
     def __init__(
         self,
-        name_model: str | None = None,
-        description: str | None = None,
-        predictive_equality: float | None = None,
-        spd: dict | None = None,
-        fpr: float | None = None,
-        disparate_impact: float | None = None,
+        name_model: str,
+        description: str,
+        predictive_equality: float,
+        spd: dict,
+        fpr: float,
+        disparate_impact: float,
     ) -> None:
-        self.dataframe = pd.read_csv('data/dataset.csv')
-
+        self.bot_notes = ''
         self.name_model = name_model
         self.description = description
         self.predictive_equality = predictive_equality
@@ -37,4 +36,4 @@ class BiasAnalysis:
         Disparate Impact: {self.disparate_impact};
         Descrição do problema: {self.description};
         '''
-        self.bot_notes = bot_prompt(prompt)
+        self.bot_notes = markdown(bot_prompt(prompt))

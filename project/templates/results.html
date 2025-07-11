@@ -80,7 +80,7 @@
       align-items: center;
       text-align: center;
       width: 100%;
-      max-width: 700px; 
+      max-width: 700px;
       box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
       border-radius: 20px;
       padding: 30px;
@@ -92,12 +92,14 @@
       background-color: #f5f5f5;
       border: 1px solid #ddd;
       padding: 30px;
+      min-width: 1000;
       margin-bottom: 20px;
       border-radius: 16px;
       width: 50%;
     }
 
     .nota-complementada-block {
+      max-width: 1000px;
       background: #fff;
       border: 1px solid #e0e0e0;
       border-radius: 16px;
@@ -132,7 +134,7 @@
         <h4>Comentários de IA</h4>
         <div class="nota-complementada-block">
           <div class="markdown-body">
-            {{ analysis.bot_notes }}
+            {{ analysis.bot_notes | safe}}
           </div>
         </div>
       </div>

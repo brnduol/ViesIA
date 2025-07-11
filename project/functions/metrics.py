@@ -5,11 +5,10 @@ import pandas as pd
 
 def predictive_equality_fpr_diff(
     df: pd.DataFrame,
-    privileged_value: int,
-    unprivileged_value: int,
-    y_true_col: str = "y_true",
-    y_pred_col: str = "y_pred",
-    sensitive_col: str = "sensitive_attr",
+    privileged_value: str,
+    y_true_col: str = 'y_true',
+    y_pred_col: str = 'y_pred',
+    sensitive_col: str = 'sensitive_attr',
 ) -> float:
     '''
     Calculates the Predictive Equality metric (difference in false positive rates - FPR).
@@ -26,6 +25,12 @@ def predictive_equality_fpr_diff(
         FPR_diff: difference in FPR between unprivileged and privileged groups
     '''
 
+    # Get all unique values except the privileged one
+    unprivileged_values = [
+        v for v in df['sensitive_attr'].unique() if v != privileged_value
+    ]
+    unprivileged_value = unprivileged_values[0]
+
     unpriv = df[(df[sensitive_col] == unprivileged_value) & (df[y_true_col] == 0)]
     priv = df[(df[sensitive_col] == privileged_value) & (df[y_true_col] == 0)]
 
@@ -40,7 +45,7 @@ def predictive_equality_fpr_diff(
 
 def statistical_parity_difference(
     df: pd.DataFrame,
-    privileged_value: int,
+    privileged_value: str,
 ) -> Dict[int, float]:
     '''
     Computes the Statistical Parity Difference between of the reference group with all others in the DataFrame.
@@ -50,7 +55,7 @@ def statistical_parity_difference(
     Args:
         df (pd.Dataframe): Pandas DataFrame.
 
-        privileged_value (int): index of privileged group.
+        privileged_value (str): value in sensitive_attr considered as the privileged group.
 
     Returns:
         dict: Dictionary with the SPD value for each of the groups. The group's SPD value is accessed with its encoded index as key.
@@ -69,37 +74,42 @@ def statistical_parity_difference(
     return spd_dict
 
 
-def false_positive_rate(df: pd.DataFrame) -> float:
+def false_positive_rate(
+    df: pd.DataFrame, y_pred_col: str = 'y_pred', y_true_col: str = 'y_true'
+) -> float:
     '''
-    Computes the False Positive Rate in a pandas DataFrame.
+    Computes the False Positive Rate (FPR).
 
     Args:
-        df (pd.DataFrame): Pandas DataFrame
+        df: Pandas DataFrame
+        y_pred_col: name of the prediction column
+        y_true_col: name of the true label column
 
     Returns:
-        float: The false positive rate of the DataFrame
+        float: The false positive rate
     '''
-
-    false_positives = df[(df['y_pred'] == 1) & (df['y_true'] == 0)]
-    true_negatives = df[(df['y_pred'] == 0) & (df['y_true'] == 0)]
-
-    return len(false_positives) / (len(false_positives) + len(true_negatives) + -1e20)
+    false_positives = df[(df[y_pred_col] == 1) & (df[y_true_col] == 0)]
+    true_negatives = df[(df[y_pred_col] == 0) & (df[y_true_col] == 0)]
+    denominator = len(false_positives) + len(true_negatives)
+    if denominator == 0:
+        return 0.0
+    return len(false_positives) / denominator
 
 
 def disparate_impact(
     df: pd.DataFrame,
     sensitive_attr: str,
-    privileged_value: int,
+    privileged_value: str,
     positive_label: int = 1,
 ) -> float:
     '''
     Calculates Disparate Impact (DI) in a DataFrame.
 
     Parameters:
-        df(pd.DataFrame): pandas DataFrame with columns ['y_pred', 'y_true', sensitive_attr]
-        sensitive_attr (str): name of the sensitive attribute column (e.g. 'race')
-        privileged_value (int): value in sensitive_attr considered as the privileged group
-        positive_label (int): the label considered as a "positive outcome" (default=1)
+        df(pd.DataFrame): pandas DataFrame with columns ['y_pred', 'y_true', sensitive_attr].
+        sensitive_attr (str): name of the sensitive attribute column (e.g. 'race').
+        privileged_value (str): value in sensitive_attr considered as the privileged group.
+        positive_label (int): the label considered as a 'positive outcome' (default=1).
 
     Returns:
         DI: float, the disparate impact value

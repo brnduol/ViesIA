@@ -15,7 +15,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def bot_prompt(prompt: str):
+def bot_prompt(prompt: str) -> str:
     '''
     Takes a string as prompt and returns a response generated based
     on said prompt.
@@ -46,5 +46,8 @@ def bot_prompt(prompt: str):
         ],
     )
 
-    # Returning response content
-    return markdown(response.choices[0].message.content)
+    answer = response.choices[0].message.content
+
+    if answer is None:
+        return ''
+    return answer

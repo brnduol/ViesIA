@@ -3,7 +3,8 @@ import pandas as pd
 from flask import Flask, request, redirect, url_for, render_template, flash
 
 from models import BiasAnalysis
-from functions.metrics import *
+from functions.metrics import predictive_equality_fpr_diff, false_positive_rate
+from functions.metrics import statistical_parity_difference, disparate_impact
 from functions.helpers import allowed_file
 
 app = Flask(__name__)
@@ -23,7 +24,8 @@ def home():
 def forms():
     if request.method == 'POST':
         name = request.form['name']
-        problem: str = request.form['problem']
+        problem = request.form['problem']
+        privileged_value = request.form['privileged_value']
         file = request.files['file']
         if file and allowed_file(file.filename):
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], 'dataset.csv')
@@ -35,21 +37,29 @@ def forms():
 
             file.save(filepath)
 
-            analysis = BiasAnalysis(name_model=name, description=problem)
-            analysis.predictive_equality = predictive_equality_fpr_diff(
-                df=analysis.dataframe,
-                privileged_value=1,
-                unprivileged_value=0,
+            dataframe = pd.read_csv(filepath)
+
+            predictive_equality = predictive_equality_fpr_diff(
+                df=dataframe,
+                privileged_value=privileged_value,
             )
-            analysis.spd = statistical_parity_difference(
-                df=analysis.dataframe,
-                privileged_value=1,
+            spd = statistical_parity_difference(
+                df=dataframe,
+                privileged_value=privileged_value,
             )
-            analysis.fpr = false_positive_rate(analysis.dataframe)
-            analysis.disparate_impact = disparate_impact(
-                df=analysis.dataframe,
+            di = disparate_impact(
+                df=dataframe,
                 sensitive_attr='sensitive_attr',
-                privileged_value=1,
+                privileged_value=privileged_value,
+            )
+            fpr = false_positive_rate(dataframe)
+            analysis = BiasAnalysis(
+                name_model=name,
+                description=problem,
+                predictive_equality=predictive_equality,
+                spd=spd,
+                fpr=fpr,
+                disparate_impact=di,
             )
             analysis.add_bot_notes()
 
@@ -63,7 +73,7 @@ def forms():
 
 @app.route('/results', methods=['GET', 'POST'])
 def results():
-    analysis = BiasAnalysis()
+    analysis = BiasAnalysis._instance
     return render_template('results.html', analysis=analysis)
 
 
