@@ -43,22 +43,72 @@ SPD = (resultado positivo / desprivilegiados) - (resultado positivo / privilegia
 
 A SPD mede, portanto, a proporção de resultados favoráveis entre um grupo monitorado e um grupo de referência (grupo sensível).
 
+## Estrutura do Projeto
+
+```
+├── data/                      # Arquivos de entrada (datasets)
+│   ├── dataset.csv
+│   └── teste.csv
+├── project/
+│   ├── functions/             # Funções auxiliares
+│   │   ├── helpers.py
+│   │   └── metrics.py
+│   ├── templates/             # Templates HTML (se aplicável)
+│   ├── app.py                 # Arquivo principal da aplicação Flask
+│   └── models.py              # Modelos ou funções principais do projeto
+├── .env                       # Variáveis de ambiente (não versionado)
+├── .gitignore
+├── README.md
+└── requirements.txt
+```
+
+---
+
+
 ## Como executar o programa
 
-### Instalar as dependências 
-```
-pip install pandas numpy flask markdown openai dotenv
+### 1. Clone o repositório
+
+```bash
+git clone https://github.com/seu-usuario/viesia.git
+cd viesia
 ```
 
-### Variáveis de ambiente
-Primeiramente, é necessário que o usuário possua uma API Key da OpenAI, para que seja possível a utilização dos recursos de suas LLMS. A chave criada deve ser inserida em um arquvio `.env` na raiz do projeto com o conteúdo:
+### 2. Instale as dependências
 
+```bash
+pip install -r requirements.txt
 ```
+
+
+### Configuração de Variáveis de Ambiente
+
+Crie um arquivo `.env` na raiz do projeto com o seguinte conteúdo:
+
+```env
 APP_SECRET_KEY=424264
 OPEN_AI_KEY=SuaChaveAqui
 ```
 
+* `APP_SECRET_KEY`: Usado pelo Flask para segurança da sessão.
+* `OPEN_AI_KEY`: Sua chave da API da OpenAI. [Obtenha aqui](https://platform.openai.com/account/api-keys)
+
+---
+
 ### Executar a aplicação
+
+Após configurar as variáveis de ambiente:
+
+```bash
+python3 project/app.py
 ```
-python3 app.py
-```
+
+A aplicação será iniciada localmente, normalmente em `http://127.0.0.1:5000`.
+
+---
+
+## Testes e Dados
+
+Você pode usar os arquivos `dataset.csv` e `teste.csv` dentro da pasta `data/` como exemplos para rodar a aplicação e testar funcionalidades.
+
+---
