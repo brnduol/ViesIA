@@ -10,6 +10,20 @@ Diante desse cenário, este trabalho propõe o desenvolvimento de uma ferramenta
 ## Métricas de Fairness
 Para determinar e quantificar a existência de vieses nos modelos de Deep Learning, existem as chamadas métricas de fairness, ou métricas de justiça. Essas métricas geralmente buscam identificar se há algum grupo desprivilegiado que esteja sendo prejudicado pelo modelo (por exemplo, modelos de reconhecimento facial falhando ao identificar pessoas negras).
 
+### False Positive Rate (FPR)
+A False Positive Rate (Taxa de Falsos Positivos) mede a proporção de exemplos negativos que foram incorretamente classificados como positivos pelo modelo. É uma métrica importante para avaliar o custo de erros do tipo I, especialmente em domínios sensíveis como crédito, justiça ou saúde.
+
+Fórmula:
+
+FPR = FP / (FP + TN)
+
+Onde:
+- FP = Falsos Positivos (predito 1, mas verdadeiro 0)
+- TN = Verdadeiros Negativos (predito 0 e verdadeiro 0)
+
+A FPR é útil como base para outras métricas de fairness, como a Predictive Equality, e também como medida geral de performance para modelos binários.
+
+
 ### Predictive Equality (FPR Diff)
 Predictive Equality, ou diferença na taxa de falsos positivos (FPR), é uma métrica de fairness que verifica se um modelo comete o mesmo tipo de erro: prever positivo quando a verdade é negativa, em proporções semelhantes para diferentes grupos. Ela foca no impacto dos falsos positivos, avaliando possíveis prejuízos causados por decisões incorretamente favoráveis.
 
