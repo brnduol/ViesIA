@@ -70,7 +70,7 @@ A SPD mede, portanto, a proporção de resultados favoráveis entre um grupo mon
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/viesia.git
+git clone https://github.com/brnduol/ViesIA
 cd viesia
 ```
 
