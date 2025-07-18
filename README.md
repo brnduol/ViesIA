@@ -42,3 +42,23 @@ Ou em termos de contagem de dados:
 SPD = (resultado positivo / desprivilegiados) - (resultado positivo / privilegiados)
 
 A SPD mede, portanto, a proporção de resultados favoráveis entre um grupo monitorado e um grupo de referência (grupo sensível).
+
+## Como executar o programa
+
+### Instalar as dependências 
+```
+pip install pandas numpy flask markdown openai dotenv
+```
+
+### Variáveis de ambiente
+Primeiramente, é necessário que o usuário possua uma API Key da OpenAI, para que seja possível a utilização dos recursos de suas LLMS. A chave criada deve ser inserida em um arquvio `.env` na raiz do projeto com o conteúdo:
+
+```
+APP_SECRET_KEY=424264
+OPEN_AI_KEY=SuaChaveAqui
+```
+
+### Executar a aplicação
+```
+python3 app.py
+```
